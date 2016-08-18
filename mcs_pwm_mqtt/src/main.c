@@ -65,10 +65,17 @@
 #define port "1883"
 #define clientId "mt7687"
 
-/* gpio module */
-#include "hal_gpio.h"
-#define GPIO_ON "switch,1"
-#define GPIO_OFF "switch,0"
+/* pwm module */
+#include "hal_pwm.h"
+
+/* HAL_PWM_CLOCK_40MHZ = 4 */
+#define mode (4)
+#define frequency (400000)
+
+/* gpio(pin 31) == pwm(pin 32) */
+#define pwm_pin 32
+#define pin 31
+#define PWM_CHANNEL "PWM"
 
 static SemaphoreHandle_t ip_ready;
 
@@ -107,20 +114,15 @@ static int32_t _wifi_event_handler(wifi_event_t event,
 
 void mcs_mqtt_callback(char *rcv_buf) {
 
-    int pin = 35;
+    char *arr[5];
+    char *del = ",";
+    mcs_split(arr, rcv_buf, del);
 
-    hal_pinmux_set_function(pin, 8);
-
-    hal_gpio_status_t ret;
-    ret = hal_gpio_init(pin);
-    ret = hal_gpio_set_direction(pin, HAL_GPIO_DIRECTION_OUTPUT);
-
-    if (NULL != strstr(rcv_buf, GPIO_ON)) {
-        ret = hal_gpio_set_output(pin, 1);
-    } else if (NULL != strstr(rcv_buf, GPIO_OFF)) {
-        ret = hal_gpio_set_output(pin, 0);
+    if (0 == strncmp(arr[3], PWM_CHANNEL, strlen(PWM_CHANNEL))) {
+        printf("value: %d\n", atoi(arr[4]));
+        hal_pwm_set_duty_cycle(pwm_pin, atoi(arr[4]));
     }
-    ret = hal_gpio_deinit(pin);
+
     printf("rcv_buf: %s\n", rcv_buf);
 }
 
