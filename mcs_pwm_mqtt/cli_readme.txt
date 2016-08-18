@@ -33,7 +33,7 @@
  */
 
 /**
-  * @page MT7687 mcs_gpio_mqtt CLI introduction
+  * @page MT7687 mcs_pwm_mqtt CLI introduction
   * @{    
 @par Command Overview
    This document provides details on how to set up and use Command Line Interface (CLI) and the supported command set.
