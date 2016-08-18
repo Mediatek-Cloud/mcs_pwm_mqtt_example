@@ -1,6 +1,0 @@
-#!/bin/bash
-
-echo "Config...mcs_gpio"
-export TARGET_PATH=project/mt7687_hdk/apps/mcs_gpio/GCC
-export FREERTOS_CONFIG_PATH=$PWD/project/mt7687_hdk/apps/mcs_gpio/inc
-
