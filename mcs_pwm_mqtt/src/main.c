@@ -159,6 +159,26 @@ void wifi_initial_task() {
   vTaskDelete(NULL);
 }
 
+void start_pwm() {
+    /* pwm */
+    hal_pinmux_set_function(pin, 9);
+
+    uint32_t total_count = 0;
+
+    if (HAL_PWM_STATUS_OK != hal_pwm_init(HAL_PWM_CLOCK_40MHZ)) {
+      printf("hal_pwm_init fail");
+    }
+    if (HAL_PWM_STATUS_OK != hal_pwm_set_frequency(pwm_pin, frequency, &total_count)) {
+      printf("hal_pwm_set_frequency fail");
+    }
+    if (HAL_PWM_STATUS_OK != hal_pwm_set_duty_cycle(pwm_pin, 0)) {
+      printf("hal_pwm_set_duty_cycle fail");
+    }
+    if (HAL_PWM_STATUS_OK != hal_pwm_start(pwm_pin)) {
+      printf("hal_pwm_start fail");
+    }
+
+}
 
 int main(void)
 {
@@ -200,7 +220,7 @@ int main(void)
     wifi_config.sta_config.password_length = strlen(Password);
 
     xTaskCreate(wifi_initial_task, "User app", 1024, NULL, 1, NULL);
-
+    start_pwm();
     /* Initialize cli task to enable user input cli command from uart port.*/
 #if defined(MTK_MINICLI_ENABLE)
     cli_def_create();
